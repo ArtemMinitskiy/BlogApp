@@ -74,7 +74,7 @@ public class ChatActivity extends AppCompatActivity {
         chatSendButton = (ImageButton) findViewById(R.id.chat_send_btn);
         chatMessage = (EditText) findViewById(R.id.chat_message_view);
         userImage = (CircleImageView) findViewById(R.id.chat_user_image);
-        recyclerView = (RecyclerView) findViewById(R.id.messages_list);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_messages);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.message_swipe_layout);
         messagesList = new ArrayList<>();
         rootRef = FirebaseDatabase.getInstance().getReference();

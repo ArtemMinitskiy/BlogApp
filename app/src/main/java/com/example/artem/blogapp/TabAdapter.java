@@ -15,7 +15,7 @@ class TabAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                RequestsFragment requestsFragment = new RequestsFragment();
+                PostFragment requestsFragment = new PostFragment();
                 return requestsFragment;
             case 1:
                 ChatFragment chatFragment = new ChatFragment();

@@ -71,8 +71,8 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         circleImageView = (CircleImageView) findViewById(R.id.settings_image);
-        user_name = (TextView) findViewById(R.id.txtName);
-        user_status = (TextView) findViewById(R.id.txtStatus);
+        user_name = (TextView) findViewById(R.id.settings_name);
+        user_status = (TextView) findViewById(R.id.settings_status);
         btnCngImg = (Button) findViewById(R.id.chg_img_btn);
         btnCngSts = (Button) findViewById(R.id.cng_sts_btn);
 

@@ -90,10 +90,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         ImageView messageImage;
         public MessageViewHolder(View view) {
             super(view);
-            messageText = (TextView) view.findViewById(R.id.message_view);
+            messageText = (TextView) view.findViewById(R.id.user_chat_message);
             timeText = (TextView) view.findViewById(R.id.message_time);
-            nameUser = (TextView) view.findViewById(R.id.name_view);
-            userImage = (CircleImageView) view.findViewById(R.id.user_view);
+            nameUser = (TextView) view.findViewById(R.id.user_chat_name);
+            userImage = (CircleImageView) view.findViewById(R.id.user_chat_image);
             messageImage = (ImageView) view.findViewById(R.id.message_image);
         }
     }

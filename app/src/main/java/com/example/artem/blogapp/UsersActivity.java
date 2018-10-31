@@ -37,7 +37,7 @@ public class UsersActivity extends AppCompatActivity {
 
         usersDatabase = FirebaseDatabase.getInstance().getReference().child("ChatUsers");
 
-        recyclerUsers = (RecyclerView) findViewById(R.id.recyclerUsers);
+        recyclerUsers = (RecyclerView) findViewById(R.id.recycler_users);
         recyclerUsers.setHasFixedSize(true);
         recyclerUsers.setLayoutManager(new LinearLayoutManager(this));
 

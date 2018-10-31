@@ -46,7 +46,7 @@ public class FriendsFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        friendRecyclerView = (RecyclerView) view.findViewById(R.id.friends_list);
+        friendRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_friends);
         firebaseAuth = FirebaseAuth.getInstance();
         current_user_id = firebaseAuth.getCurrentUser().getUid();
 

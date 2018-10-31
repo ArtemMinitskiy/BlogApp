@@ -27,7 +27,7 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity {
 
     private ImageView mProfileImage;
-    private TextView mProfileName, mProfileStatus, mProfileFriendsCount;
+    private TextView mProfileName, mProfileStatus;
     private Button mProfileSendReqBtn, mDeclineBtn;
 
     private DatabaseReference mUsersDatabase;
@@ -62,7 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
         mProfileImage = (ImageView) findViewById(R.id.profile_image);
         mProfileName = (TextView) findViewById(R.id.profile_name);
         mProfileStatus = (TextView) findViewById(R.id.profile_status);
-        mProfileFriendsCount = (TextView) findViewById(R.id.profile_totalFriends);
         mProfileSendReqBtn = (Button) findViewById(R.id.profile_send_req_btn);
         mDeclineBtn = (Button) findViewById(R.id.profile_decline_btn);
 

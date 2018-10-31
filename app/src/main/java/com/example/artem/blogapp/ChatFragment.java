@@ -46,7 +46,7 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.chat_recycler);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_chat);
         firebaseAuth = FirebaseAuth.getInstance();
         current_user_id = firebaseAuth.getCurrentUser().getUid();
         convDatabase = FirebaseDatabase.getInstance().getReference().child("Chat").child(current_user_id);

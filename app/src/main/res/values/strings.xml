@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">BlogApp</string>
+    <string name="chatHint">Enter Message...</string>
+    <string name="emailHint">Email</string>
+    <string name="passwordHint">Password</string>
+    <string name="loginBtn">Login</string>
+    <string name="profileName">Profile Name</string>
+    <string name="profileStatus">Profile Status</string>
+    <string name="sendRequestBtn">Send Friend Request</string>
+    <string name="declineFriendBtn">Decline Friend Request</string>
+    <string name="reqName">Name</string>
+    <string name="reqEmail">Email</string>
+    <string name="reqPassword">Password</string>
+    <string name="reqConfPassword">Confirm Password</string>
+    <string name="createAccountBtn">Create New Account</string>
+    <string name="changeImage">Change Image</string>
+    <string name="changeStatus">Change Status</string>
+    <string name="lastSeen">Last Seen</string>
+    <string name="chatMessage">Message</string>
 </resources>
