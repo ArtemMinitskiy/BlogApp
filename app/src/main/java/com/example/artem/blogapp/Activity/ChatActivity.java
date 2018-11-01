@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +19,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.artem.blogapp.GetTimeAgo;
+import com.example.artem.blogapp.Adapter.MessageAdapter;
+import com.example.artem.blogapp.Model.Messages;
+import com.example.artem.blogapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -46,10 +50,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChatActivity extends AppCompatActivity {
 
     private static final int GALLERY_PICK =1 ;
+    private static final int TOTAL_ITEMS_TO_LOAD = 10;
+
     private String chatUser, userName, currentUserId;
+    private String lastKey = "";
+    private String prevKey = "";
+    private int itemPos = 0;
+    private int currentPage = 1;
+
     private DatabaseReference rootRef;
     private StorageReference imageStorage;
-    private FirebaseAuth auth;
+    private FirebaseAuth chatAuth;
+
     private TextView titleUserName, titleLastSeen;
     private CircleImageView userImage;
     private ImageButton chatAddButton, chatSendButton;
@@ -57,13 +69,9 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<Messages> messagesList;
     private LinearLayoutManager layoutManager;
-    private MessageAdapter messageAdapter;
-    private static final int TOTAL_ITEMS_TO_LOAD = 10;
-    private int currentPage = 1;
     private SwipeRefreshLayout swipeRefresh;
-    private String lastKey = "";
-    private String prevKey = "";
-    private int itemPos = 0;
+
+    private MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +87,14 @@ public class ChatActivity extends AppCompatActivity {
         messagesList = new ArrayList<>();
         rootRef = FirebaseDatabase.getInstance().getReference();
         imageStorage = FirebaseStorage.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
-        currentUserId = auth.getCurrentUser().getUid();
+        chatAuth = FirebaseAuth.getInstance();
+        currentUserId = chatAuth.getCurrentUser().getUid();
 
         chatUser = getIntent().getStringExtra("user_id");
         userName = getIntent().getStringExtra("user_name");
 
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("");
 
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -107,7 +116,7 @@ public class ChatActivity extends AppCompatActivity {
         loadMessages();
 
         titleUserName.setText(userName);
-        rootRef.child("ChatUsers").child(chatUser).addValueEventListener(new ValueEventListener() {
+        rootRef.child("Users").child(chatUser).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String online = dataSnapshot.child("online").getValue().toString();
@@ -133,7 +142,7 @@ public class ChatActivity extends AppCompatActivity {
 
         actionBar.setCustomView(view);
 
-        rootRef.child("ChatUsers").child(currentUserId).addValueEventListener(new ValueEventListener() {
+        rootRef.child("Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChild(chatUser)){
@@ -198,11 +207,10 @@ public class ChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_PICK && resultCode == RESULT_OK){
             Uri imageUri = data.getData();
-            Log.i("mLog", imageUri + " Chat");
-            final String current_user_ref = "message/" + currentUserId + "/" + chatUser;
-            final String chat_user_ref = "message/" + chatUser + "/" + currentUserId;
+            final String current_user_ref = "Message/" + currentUserId + "/" + chatUser;
+            final String chat_user_ref = "Message/" + chatUser + "/" + currentUserId;
 
-            DatabaseReference userMessagePush = rootRef.child("message").child(currentUserId).child(chatUser).push();
+            DatabaseReference userMessagePush = rootRef.child("Message").child(currentUserId).child(chatUser).push();
             final String push_id = userMessagePush.getKey();
 
             final StorageReference filepath = imageStorage.child("message_image").child(push_id + ".jpg");
@@ -266,9 +274,6 @@ public class ChatActivity extends AppCompatActivity {
                     lastKey = messageKey;
                 }
 
-
-                Log.i("mLog", "Last Key: " + lastKey + "|Prev Key : " + prevKey + "|Message Key : " + messageKey);
-
                 messageAdapter.notifyDataSetChanged();
 
                 swipeRefresh.setRefreshing(false);
@@ -300,7 +305,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void loadMessages() {
 
-        DatabaseReference messageRef = rootRef.child("message").child(currentUserId).child(chatUser);
+        DatabaseReference messageRef = rootRef.child("Message").child(currentUserId).child(chatUser);
 
         Query messageQuery = messageRef.limitToLast(currentPage * TOTAL_ITEMS_TO_LOAD);
 
@@ -354,8 +359,8 @@ public class ChatActivity extends AppCompatActivity {
 
         String message = chatMessage.getText().toString();
         if (!TextUtils.isEmpty(message)){
-            String current_user_ref = "message/" + currentUserId + "/" + chatUser;
-            String chat_user_ref = "message/" + chatUser + "/" + currentUserId;
+            String current_user_ref = "Message/" + currentUserId + "/" + chatUser;
+            String chat_user_ref = "Message/" + chatUser + "/" + currentUserId;
 
             DatabaseReference user_message_push = rootRef.child("messages").child(currentUserId).child(chatUser).push();
 

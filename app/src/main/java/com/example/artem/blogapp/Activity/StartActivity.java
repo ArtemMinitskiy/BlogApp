@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,33 +6,33 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.artem.blogapp.R;
+
 public class StartActivity extends AppCompatActivity {
 
-    Button btn_sign_up, btn_sign_in;
+    private Button regBtn, loginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        btn_sign_up = (Button) findViewById(R.id.btn_sign_up);
-        btn_sign_in = (Button) findViewById(R.id.btn_sign_in);
+        regBtn = (Button) findViewById(R.id.btn_sign_up);
+        loginBtn = (Button) findViewById(R.id.btn_sign_in);
 
-        btn_sign_up.setOnClickListener(new View.OnClickListener() {
+        regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent signUpIntent = new Intent(StartActivity.this, RegisterActivity.class);
                 startActivity(signUpIntent);
-//                finish();
             }
         });
 
-        btn_sign_in.setOnClickListener(new View.OnClickListener() {
+        loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent signIpIntent = new Intent(StartActivity.this, LoginActivity.class);
                 startActivity(signIpIntent);
-//                finish();
             }
         });
     }

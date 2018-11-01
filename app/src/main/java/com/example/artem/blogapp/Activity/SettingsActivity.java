@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -7,14 +7,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.artem.blogapp.ChangeStatusDialog;
+import com.example.artem.blogapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -43,45 +44,42 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static final int GALLERY_PICK = 1;
 
-    private static final int MAX_LENGTH = 10;
     private DatabaseReference databaseReference;
     private FirebaseUser firebaseUser;
     private StorageReference storageReference;
 
     private CircleImageView circleImageView;
-    private TextView user_name, user_status;
+    private TextView userName, userStatus;
 
-    private ProgressDialog progressDialog;
+    private ProgressDialog settingsProgress;
 
-    private Bitmap thumb_bitmap;
+    private Bitmap thumbBitmap;
 
-    Button btnCngImg, btnCngSts;
-
-    private static final int GALLERY_PICK = 1;
-
+    private DialogFragment changeStatusDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        changeStatusDialog = new ChangeStatusDialog();
+
         getSupportActionBar().setTitle("Account Settings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         circleImageView = (CircleImageView) findViewById(R.id.settings_image);
-        user_name = (TextView) findViewById(R.id.settings_name);
-        user_status = (TextView) findViewById(R.id.settings_status);
-        btnCngImg = (Button) findViewById(R.id.chg_img_btn);
-        btnCngSts = (Button) findViewById(R.id.cng_sts_btn);
+        userName = (TextView) findViewById(R.id.settings_name);
+        userStatus = (TextView) findViewById(R.id.settings_status);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
 
         String current_uid = firebaseUser.getUid();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("ChatUsers").child(current_uid);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(current_uid);
         databaseReference.keepSynced(true);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -90,12 +88,10 @@ public class SettingsActivity extends AppCompatActivity {
                 String name = dataSnapshot.child("name").getValue().toString();
                 final String image = dataSnapshot.child("image").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
-//                String thumb_image = dataSnapshot.child("thumb_image").getValue().toString();
 
-                user_name.setText(name);
-                user_status.setText(status);
+                userName.setText(name);
+                userStatus.setText(status);
 
-//                Picasso.get().load(image).into(circleImageView);
                 if(!image.equals("default")) {
 
                     Picasso.get().load(image).networkPolicy(NetworkPolicy.OFFLINE)
@@ -120,19 +116,15 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        btnCngSts.setOnClickListener(new View.OnClickListener() {
+        userStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeStatusDialog.show(getSupportFragmentManager(), " ");
 
-                String status_value = user_status.getText().toString();
-                Intent statusIntent = new Intent(SettingsActivity.this, StatusActivity.class);
-                statusIntent.putExtra("status_value", status_value);
-                startActivity(statusIntent);
-                finish();
             }
         });
 
-        btnCngImg.setOnClickListener(new View.OnClickListener() {
+        circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent galleryIntent = new Intent();
@@ -140,9 +132,6 @@ public class SettingsActivity extends AppCompatActivity {
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
 
-//                CropImage.activity()
-//                        .setGuidelines(CropImageView.Guidelines.ON)
-//                        .start(SettingsActivity.this);
             }
         });
     }
@@ -157,7 +146,6 @@ public class SettingsActivity extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setAspectRatio(1,1)
                     .start(this);
-//            Toast.makeText(SettingsActivity.this, imageUri, Toast.LENGTH_SHORT).show();
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -165,21 +153,20 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
 
-                progressDialog = new ProgressDialog(SettingsActivity.this);
-                progressDialog.setTitle("Uploading Image...");
-                progressDialog.setMessage("Please wait...");
-                progressDialog.setCanceledOnTouchOutside(false);
-                progressDialog.show();
+                settingsProgress = new ProgressDialog(SettingsActivity.this);
+                settingsProgress.setTitle("Uploading Image...");
+                settingsProgress.setMessage("Please wait...");
+                settingsProgress.setCanceledOnTouchOutside(false);
+                settingsProgress.show();
 
                 Uri resultUri = result.getUri();
-                Log.i("mLog", resultUri + " Settings");
 
                 File thumb_file = new File(resultUri.getPath());
 
                 final String current_user_id = firebaseUser.getUid();
 
                 try {
-                      thumb_bitmap = new Compressor(this)
+                      thumbBitmap = new Compressor(this)
                             .setMaxWidth(200)
                             .setMaxHeight(200)
                             .setQuality(75)
@@ -189,7 +176,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                thumb_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                thumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 final byte[] thumb_byte = baos.toByteArray();
 
                 final StorageReference filepath = storageReference.child("profile_images").child(current_user_id + ".jpg");
@@ -223,13 +210,13 @@ public class SettingsActivity extends AppCompatActivity {
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()){
                                                             Toast.makeText(SettingsActivity.this, "Success uploading!", Toast.LENGTH_SHORT).show();
-                                                            progressDialog.dismiss();
+                                                            settingsProgress.dismiss();
                                                         }
                                                     }
                                                 });
                                             }else {
                                                 Toast.makeText(SettingsActivity.this, "Error in uploading thumb image", Toast.LENGTH_SHORT).show();
-                                                progressDialog.dismiss();
+                                                settingsProgress.dismiss();
                                             }
                                         }
                                     });
@@ -239,7 +226,7 @@ public class SettingsActivity extends AppCompatActivity {
                             });
                         }else {
                             Toast.makeText(SettingsActivity.this, "Error in uploading", Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
+                            settingsProgress.dismiss();
                         }
                     }
                 });

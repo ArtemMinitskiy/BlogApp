@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -8,10 +8,12 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.artem.blogapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -25,8 +27,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputLayout logEmail, logPassword;
     private Button btnLogin;
-    private ProgressDialog loginProgDialog;
-    private FirebaseAuth firebaseAuth;
+    private ProgressDialog loginProgress;
+
+    private FirebaseAuth loginAuth;
     private DatabaseReference databaseReference;
 
     @Override
@@ -34,18 +37,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        loginAuth = FirebaseAuth.getInstance();
 
         logEmail = (TextInputLayout) findViewById(R.id.log_email);
         logPassword = (TextInputLayout) findViewById(R.id.log_password);
         btnLogin = (Button) findViewById(R.id.btn_login);
 
-        loginProgDialog = new ProgressDialog(this);
+        loginProgress = new ProgressDialog(this);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("ChatUsers");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
 
         getSupportActionBar().setTitle("Login Account");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,9 +60,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(strLogEmail) || !TextUtils.isEmpty(strLogPassword)){
 
                     loginUser(strLogEmail, strLogPassword);
-                    loginProgDialog.setTitle("Logging In");
-                    loginProgDialog.setMessage("Please wait...");
-                    loginProgDialog.show();
+                    loginProgress.setTitle("Logging In");
+                    loginProgress.setMessage("Please wait...");
+                    loginProgress.show();
 
                 }
             }
@@ -67,15 +71,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUser(String strLogEmail, String strLogPassword) {
 
-        firebaseAuth.signInWithEmailAndPassword(strLogEmail, strLogPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        loginAuth.signInWithEmailAndPassword(strLogEmail, strLogPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()){
 
-                    loginProgDialog.dismiss();
+                    loginProgress.dismiss();
 
-                    String current_user_id = firebaseAuth.getCurrentUser().getUid();
+                    String current_user_id = loginAuth.getCurrentUser().getUid();
                     String deviceToken = FirebaseInstanceId.getInstance().getToken();
 
                     databaseReference.child(current_user_id).child("device_token").setValue(deviceToken).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -90,12 +94,25 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 }else {
-                    loginProgDialog.hide();
-                    // If sign in fails, display a message to the user.
-                    Log.w("Log", "createUserWithEmail:failure", task.getException());
+                    loginProgress.hide();
                     Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(LoginActivity.this, StartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

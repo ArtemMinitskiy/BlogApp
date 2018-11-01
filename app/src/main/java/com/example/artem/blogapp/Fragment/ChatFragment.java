@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.artem.blogapp.Activity.ChatActivity;
+import com.example.artem.blogapp.Model.Conv;
+import com.example.artem.blogapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,8 +54,8 @@ public class ChatFragment extends Fragment {
         current_user_id = firebaseAuth.getCurrentUser().getUid();
         convDatabase = FirebaseDatabase.getInstance().getReference().child("Chat").child(current_user_id);
         convDatabase.keepSynced(true);
-        usersDatabase = FirebaseDatabase.getInstance().getReference().child("ChatUsers");
-        messageDatabase = FirebaseDatabase.getInstance().getReference().child("message").child(current_user_id);
+        usersDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        messageDatabase = FirebaseDatabase.getInstance().getReference().child("Message").child(current_user_id);
         usersDatabase.keepSynced(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setReverseLayout(true);

@@ -1,10 +1,14 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-class TabAdapter extends FragmentPagerAdapter {
+import com.example.artem.blogapp.Fragment.ChatFragment;
+import com.example.artem.blogapp.Fragment.FriendsFragment;
+import com.example.artem.blogapp.Fragment.PostFragment;
+
+public class TabAdapter extends FragmentPagerAdapter {
 
     public TabAdapter(FragmentManager fm) {
         super(fm);

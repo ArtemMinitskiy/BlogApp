@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.artem.blogapp.R;
+import com.example.artem.blogapp.Adapter.TabAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -15,10 +17,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 
 public class MainActivity extends AppCompatActivity {
-
-    private FirebaseAuth mAuth;
+    
     private ViewPager viewPager;
+    
+    private FirebaseAuth mainAuth;
     private DatabaseReference userRef;
+    
     private TabAdapter tabAdapter;
     private TabLayout tabLayout;
 
@@ -30,22 +34,22 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.tab_pager);
         tabLayout = (TabLayout) findViewById(R.id.main_tabs);
 
-        getSupportActionBar().setTitle("FireChat");
+        getSupportActionBar().setTitle("BlogApp");
 
         tabAdapter = new TabAdapter(getSupportFragmentManager());
         viewPager.setAdapter(tabAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() != null) {
-            userRef = FirebaseDatabase.getInstance().getReference().child("ChatUsers").child(mAuth.getCurrentUser().getUid());
+        mainAuth = FirebaseAuth.getInstance();
+        if (mainAuth.getCurrentUser() != null) {
+            userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mainAuth.getCurrentUser().getUid());
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mainAuth.getCurrentUser();
         if (currentUser == null){
             sendBack();
 
@@ -57,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mainAuth.getCurrentUser();
         if (currentUser != null){
             userRef.child("online").setValue(ServerValue.TIMESTAMP);
 

@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Adapter;
 
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.artem.blogapp.Model.Messages;
+import com.example.artem.blogapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Messages messages = messagesList.get(position);
         String from_user = messages.getFrom();
         String message_type = messages.getType();
-        userDatabase = FirebaseDatabase.getInstance().getReference().child("ChatUsers").child(from_user);
+        userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
         userDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

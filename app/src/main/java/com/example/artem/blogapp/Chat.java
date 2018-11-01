@@ -35,7 +35,7 @@ public class Chat extends Application {
 
         if (userAuth.getCurrentUser() != null) {
             userDatabase = FirebaseDatabase.getInstance().getReference()
-                    .child("ChatUsers").child(userAuth.getCurrentUser().getUid());
+                    .child("Users").child(userAuth.getCurrentUser().getUid());
 
             userDatabase.addValueEventListener(new ValueEventListener() {
                 @Override

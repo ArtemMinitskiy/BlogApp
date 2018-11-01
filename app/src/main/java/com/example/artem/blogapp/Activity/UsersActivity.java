@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.artem.blogapp.R;
+import com.example.artem.blogapp.Model.Users;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
@@ -24,6 +26,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UsersActivity extends AppCompatActivity {
 
     private RecyclerView recyclerUsers;
+
     private DatabaseReference usersDatabase;
 
     @Override
@@ -35,7 +38,7 @@ public class UsersActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        usersDatabase = FirebaseDatabase.getInstance().getReference().child("ChatUsers");
+        usersDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
         recyclerUsers = (RecyclerView) findViewById(R.id.recycler_users);
         recyclerUsers.setHasFixedSize(true);
@@ -56,9 +59,9 @@ public class UsersActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users users) {
-                holder.setUser_name(users.getName());
-                holder.setUser_status(users.getStatus());
-                holder.setUser_image(users.getThumb_image(), getApplicationContext());
+                holder.userName.setText(users.getName());
+                holder.userStatus.setText(users.getStatus());
+                holder.setUserImage(users.getThumb_image(), getApplicationContext());
 
                 final String user_id = getRef(position).getKey();
 
@@ -105,25 +108,19 @@ public class UsersActivity extends AppCompatActivity {
 
     public class UsersViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView user_name, user_status;
+        private TextView userName, userStatus;
+        private CircleImageView userImageView;
         View view;
 
         public UsersViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            userName = (TextView) itemView.findViewById(R.id.user_name);
+            userStatus = (TextView) itemView.findViewById(R.id.user_status);
+            userImageView = (CircleImageView) itemView.findViewById(R.id.user_image);
             view = itemView;
         }
 
-        public void setUser_name(String name){
-            user_name = (TextView) itemView.findViewById(R.id.user_name);
-            user_name.setText(name);
-        }
-        public void setUser_status(String status){
-            user_status = (TextView) itemView.findViewById(R.id.user_status);
-            user_status.setText(status);
-        }
-        public void setUser_image(String thumb_image, Context context){
-            CircleImageView userImageView = (CircleImageView) itemView.findViewById(R.id.user_image);
+        public void setUserImage(String thumb_image, Context context){
 
             Picasso.get().load(thumb_image).placeholder(R.drawable.user_default).into(userImageView);
 

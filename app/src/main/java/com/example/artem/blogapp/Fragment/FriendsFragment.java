@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.artem.blogapp.Activity.ChatActivity;
+import com.example.artem.blogapp.Activity.ProfileActivity;
+import com.example.artem.blogapp.Model.Friends;
+import com.example.artem.blogapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +56,7 @@ public class FriendsFragment extends Fragment {
 
         friendDateDatabase = FirebaseDatabase.getInstance().getReference().child("Friend").child(current_user_id);
         friendDateDatabase.keepSynced(true);
-        friendDataBase = FirebaseDatabase.getInstance().getReference().child("ChatUsers");
+        friendDataBase = FirebaseDatabase.getInstance().getReference().child("Users");
         friendDataBase.keepSynced(true);
 
         friendRecyclerView.setHasFixedSize(true);

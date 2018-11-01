@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity">
+    tools:context=".Activity.SettingsActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/settings_image"
@@ -23,14 +23,14 @@
     <TextView
         android:id="@+id/settings_name"
         android:layout_width="200dp"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/settings_image"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/profileName"
-        android:textSize="25sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_image" />
@@ -45,41 +45,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/profileStatus"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_name" />
-
-    <Button
-        android:id="@+id/chg_img_btn"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/settings_status"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/blue"
-        android:text="@string/changeImage"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_status" />
-
-    <Button
-        android:id="@+id/cng_sts_btn"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/chg_img_btn"
-        android:layout_alignStart="@+id/chg_img_btn"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/blue"
-        android:text="@string/changeStatus"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chg_img_btn" />
 
 </android.support.constraint.ConstraintLayout>

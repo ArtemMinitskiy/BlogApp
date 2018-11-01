@@ -1,4 +1,4 @@
-package com.example.artem.blogapp;
+package com.example.artem.blogapp.Model;
 
 public class Conv {
     public boolean seen;

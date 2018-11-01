@@ -17,4 +17,6 @@
     <string name="changeStatus">Change Status</string>
     <string name="lastSeen">Last Seen</string>
     <string name="chatMessage">Message</string>
+    <string name="newStatus">Enter New Status</string>
+    <string name="cancelBtn">Cancel</string>
 </resources>
