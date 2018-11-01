@@ -41,9 +41,9 @@ public class TabAdapter extends FragmentPagerAdapter {
 
         switch (position){
             case 0:
-                return "Requests";
+                return "Posts";
             case 1:
-                return "Chat";
+                return "Chats";
             case 2:
                 return "Friends";
             default:

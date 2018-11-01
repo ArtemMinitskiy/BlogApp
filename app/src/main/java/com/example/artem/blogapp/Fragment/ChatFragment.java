@@ -34,10 +34,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatFragment extends Fragment {
 
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerChat;
     private DatabaseReference convDatabase, messageDatabase, usersDatabase;
     private FirebaseAuth firebaseAuth;
-    private String current_user_id;
+    private String currentUserId;
     private View view;
 
 
@@ -49,19 +49,21 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_chat);
+        recyclerChat = (RecyclerView) view.findViewById(R.id.recycler_chat);
+
         firebaseAuth = FirebaseAuth.getInstance();
-        current_user_id = firebaseAuth.getCurrentUser().getUid();
-        convDatabase = FirebaseDatabase.getInstance().getReference().child("Chat").child(current_user_id);
+        currentUserId = firebaseAuth.getCurrentUser().getUid();
+        convDatabase = FirebaseDatabase.getInstance().getReference().child("Chat").child(currentUserId);
         convDatabase.keepSynced(true);
         usersDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
-        messageDatabase = FirebaseDatabase.getInstance().getReference().child("Message").child(current_user_id);
+        messageDatabase = FirebaseDatabase.getInstance().getReference().child("Message").child(currentUserId);
         usersDatabase.keepSynced(true);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerChat.setHasFixedSize(true);
+        recyclerChat.setLayoutManager(layoutManager);
 
         return view;
     }
@@ -129,7 +131,7 @@ public class ChatFragment extends Fragment {
                             String userOnline = dataSnapshot.child("online").getValue().toString();
                             holder.setUserOnline(userOnline);
                         }
-                        holder.setName(userName);
+                        holder.userNameView.setText(userName);
                         holder.setImage(userThumb, getContext());
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -151,20 +153,26 @@ public class ChatFragment extends Fragment {
         };
 
         adapter.startListening();
-        recyclerView.setAdapter(adapter);
+        recyclerChat.setAdapter(adapter);
     }
 
     public class ConvViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView userStatusView, userNameView;
+        private CircleImageView userImageView;
+        private ImageView userOnlineView;
         View view;
+
         public ConvViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-
+            userStatusView = (TextView) view.findViewById(R.id.user_status);
+            userNameView = (TextView) view.findViewById(R.id.user_name);
+            userImageView = (CircleImageView) view.findViewById(R.id.user_image);
+            userOnlineView = (ImageView) view.findViewById(R.id.ic_online);
         }
 
         public void setMessage(String message, String type, boolean isSeen) {
-            TextView userStatusView = (TextView) view.findViewById(R.id.user_status);
-
             if (type.equals("text")){
                 userStatusView.setText(message);
             }else {
@@ -179,16 +187,14 @@ public class ChatFragment extends Fragment {
                 userStatusView.setTypeface(userStatusView.getTypeface(), Typeface.NORMAL);
             }
         }
-        public void setName(String name) {
-            TextView userNameView = (TextView) view.findViewById(R.id.user_name);
-            userNameView.setText(name);
-        }
+
         public void setImage(String image, Context context) {
-            CircleImageView userImageView = (CircleImageView) view.findViewById(R.id.user_image);
+
             Picasso.get().load(image).placeholder(R.drawable.user_default).into(userImageView);
         }
+
         public void setUserOnline(String online) {
-            ImageView userOnlineView = (ImageView) view.findViewById(R.id.ic_online);
+
             if (online.equals("true")){
                 userOnlineView.setVisibility(View.VISIBLE);
             }else {

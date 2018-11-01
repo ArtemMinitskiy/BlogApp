@@ -33,11 +33,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendsFragment extends Fragment {
 
-    private RecyclerView friendRecyclerView;
-    private DatabaseReference friendDateDatabase,friendDataBase;
+    private RecyclerView recyclerFriends;
+    private DatabaseReference friendDateDatabase,friendDatabase;
     private FirebaseAuth firebaseAuth;
 
-    private String current_user_id;
+    private String currentUserId;
 
     private View view;
 
@@ -50,17 +50,17 @@ public class FriendsFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        friendRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_friends);
+        recyclerFriends = (RecyclerView) view.findViewById(R.id.recycler_friends);
         firebaseAuth = FirebaseAuth.getInstance();
-        current_user_id = firebaseAuth.getCurrentUser().getUid();
+        currentUserId = firebaseAuth.getCurrentUser().getUid();
 
-        friendDateDatabase = FirebaseDatabase.getInstance().getReference().child("Friend").child(current_user_id);
+        friendDateDatabase = FirebaseDatabase.getInstance().getReference().child("Friend").child(currentUserId);
         friendDateDatabase.keepSynced(true);
-        friendDataBase = FirebaseDatabase.getInstance().getReference().child("Users");
-        friendDataBase.keepSynced(true);
+        friendDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        friendDatabase.keepSynced(true);
 
-        friendRecyclerView.setHasFixedSize(true);
-        friendRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerFriends.setHasFixedSize(true);
+        recyclerFriends.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return view;
     }
@@ -78,11 +78,11 @@ public class FriendsFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull final FriendsViewHolder holder, int position, @NonNull Friends friends) {
-                holder.setDate(friends.getDate());
+                holder.friendLastSeen.setText(friends.getDate());
 
-                final String list_user_id = getRef(position).getKey();
+                final String listUserId = getRef(position).getKey();
 
-                friendDataBase.child(list_user_id).addValueEventListener(new ValueEventListener() {
+                friendDatabase.child(listUserId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String friendsName = dataSnapshot.child("name").getValue().toString();
@@ -93,7 +93,7 @@ public class FriendsFragment extends Fragment {
                             holder.setFriend_online(friendsOnline);
                         }
 
-                        holder.setFriend_name(friendsName);
+                        holder.friendName.setText(friendsName);
                         holder.setFriend_image(friendsImage, getContext());
 
                         holder.view.setOnClickListener(new View.OnClickListener() {
@@ -108,12 +108,12 @@ public class FriendsFragment extends Fragment {
 
                                         if (position == 0){
                                             Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
-                                            profileIntent.putExtra("user_id", list_user_id);
+                                            profileIntent.putExtra("user_id", listUserId);
                                             startActivity(profileIntent);
                                         }
                                         if (position == 1){
                                             Intent chatIntent = new Intent(getContext(), ChatActivity.class);
-                                            chatIntent.putExtra("user_id", list_user_id);
+                                            chatIntent.putExtra("user_id", listUserId);
                                             chatIntent.putExtra("user_name", friendsName);
                                             startActivity(chatIntent);
                                         }
@@ -142,32 +142,32 @@ public class FriendsFragment extends Fragment {
 
         };
         adapter.startListening();
-        friendRecyclerView.setAdapter(adapter);
+        recyclerFriends.setAdapter(adapter);
     }
 
 
     public class FriendsViewHolder extends RecyclerView.ViewHolder {
 
+        private TextView friendLastSeen, friendName;
+        private CircleImageView userImageView;
+        private ImageView onlineImage;
         View view;
 
         public FriendsViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
+            friendLastSeen = (TextView) view.findViewById(R.id.user_status);
+            friendName = (TextView) itemView.findViewById(R.id.user_name);
+            userImageView = (CircleImageView) itemView.findViewById(R.id.user_image);
+            onlineImage = (ImageView) view.findViewById(R.id.ic_online);
+
+
         }
-        public void setDate(String date){
-            TextView userNameView = (TextView) itemView.findViewById(R.id.user_status);
-            userNameView.setText(date);
-        }
-        public void setFriend_name(String name){
-            TextView friend_name = (TextView) itemView.findViewById(R.id.user_name);
-            friend_name.setText(name);
-        }
+
         public void setFriend_image(String friend_image, Context context){
-            CircleImageView userImageView = (CircleImageView) itemView.findViewById(R.id.user_image);
             Picasso.get().load(friend_image).placeholder(R.drawable.user_default).into(userImageView);
         }
         public void setFriend_online(String friend_online){
-            ImageView onlineImage = (ImageView) view.findViewById(R.id.ic_online);
             if (friend_online.equals("true")){
 
                 onlineImage.setVisibility(View.VISIBLE);

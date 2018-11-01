@@ -129,7 +129,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     Long lastTime = Long.parseLong(online);
                     String lastSeenTime = getTimeAgo.getTimeAgo(lastTime, getApplicationContext());
-                    titleLastSeen.setText("Last Seen: " + lastSeenTime);
+                    titleLastSeen.setText("last seen: " + lastSeenTime);
                 }
                 Picasso.get().load(image).placeholder(R.drawable.user_default).into(userImage);
             }
