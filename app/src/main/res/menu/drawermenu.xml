@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/friends"
+        android:id="@+id/friends"
+        android:icon="@mipmap/ic_friends"/>
+
+    <item android:title="@string/messages"
+        android:id="@+id/messages"
+        android:icon="@mipmap/ic_messages"/>
+
+    <item android:title="@string/posts"
+        android:id="@+id/posts"
+        android:icon="@mipmap/ic_posts"/>
+
+    <item android:title="@string/users"
+        android:id="@+id/users"
+        android:icon="@mipmap/ic_users"/>
+
+    <item android:title="@string/settings"
+        android:id="@+id/settings"
+        android:icon="@mipmap/ic_settings"/>
+
+    <item android:title="@string/logout"
+        android:id="@+id/logout"
+        android:icon="@mipmap/ic_logout"/>
+
+</menu>

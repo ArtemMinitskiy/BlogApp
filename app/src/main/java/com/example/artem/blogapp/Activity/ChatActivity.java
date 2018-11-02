@@ -81,7 +81,6 @@ public class ChatActivity extends AppCompatActivity {
         chatAddButton = (ImageButton) findViewById(R.id.chat_add_btn);
         chatSendButton = (ImageButton) findViewById(R.id.chat_send_btn);
         chatMessage = (EditText) findViewById(R.id.chat_message_view);
-        userImage = (CircleImageView) findViewById(R.id.chat_user_image);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_messages);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.message_swipe_layout);
         messagesList = new ArrayList<>();
@@ -93,12 +92,10 @@ public class ChatActivity extends AppCompatActivity {
         chatUser = getIntent().getStringExtra("user_id");
         userName = getIntent().getStringExtra("user_name");
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("");
+        getSupportActionBar().setTitle("");
 
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.chat_bar, null);
@@ -140,7 +137,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        actionBar.setCustomView(view);
+        getSupportActionBar().setCustomView(view);
 
         rootRef.child("Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override

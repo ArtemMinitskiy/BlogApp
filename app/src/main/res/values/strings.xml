@@ -19,4 +19,10 @@
     <string name="chatMessage">Message</string>
     <string name="newStatus">Enter New Status</string>
     <string name="cancelBtn">Cancel</string>
+    <string name="friends">Friends</string>
+    <string name="messages">Messages</string>
+    <string name="posts">Posts</string>
+    <string name="settings">Settings</string>
+    <string name="logout">LogOut</string>
+    <string name="users">Users</string>
 </resources>
