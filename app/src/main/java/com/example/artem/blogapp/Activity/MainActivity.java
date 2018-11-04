@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.artem.blogapp.Fragment.ChatFragment;
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         navigationView = (NavigationView) findViewById(R.id.navLayout);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -75,20 +77,42 @@ public class MainActivity extends AppCompatActivity {
                     sendBack();
                 }
 
-
+                drawerLayout.closeDrawers();
                 return false;
             }
 
         });
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this,drawerLayout, R.string.app_name, R.string.app_name);
-        drawerLayout.setDrawerListener(drawerToggle);
+        drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
         mainAuth = FirebaseAuth.getInstance();
         if (mainAuth.getCurrentUser() != null) {
             userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mainAuth.getCurrentUser().getUid());
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    return true;
+                default:
+            }
+        }
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+                default:
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
