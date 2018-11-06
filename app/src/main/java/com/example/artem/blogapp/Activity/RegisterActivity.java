@@ -26,7 +26,7 @@ import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private TextInputLayout regName, regEmail, regPassword;
+    private TextInputLayout regName, regEmail, regPassword, confirmPassword;
     private Button btnCreate;
     
     private FirebaseAuth registerAuth;
@@ -48,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         regName = (TextInputLayout) findViewById(R.id.reg_name);
         regEmail = (TextInputLayout) findViewById(R.id.reg_email);
         regPassword = (TextInputLayout) findViewById(R.id.reg_password);
+        confirmPassword = (TextInputLayout) findViewById(R.id.confirm_paswword);
         btnCreate = (Button) findViewById(R.id.btn_create_account);
 
         registerProgress = new ProgressDialog(this);
@@ -58,13 +59,19 @@ public class RegisterActivity extends AppCompatActivity {
                 String dsplName = regName.getEditText().getText().toString();
                 String dsplEmail = regEmail.getEditText().getText().toString();
                 String dsplPassword = regPassword.getEditText().getText().toString();
+                String dsplConfPassword = confirmPassword.getEditText().getText().toString();
 
-                if (!TextUtils.isEmpty(dsplName) || !TextUtils.isEmpty(dsplEmail) || !TextUtils.isEmpty(dsplPassword)){
-                    registerProgress.setTitle("Rigister User");
-                    registerProgress.setMessage("Please wait...");
-                    registerProgress.setCanceledOnTouchOutside(false);
-                    registerProgress.show();
-                    registerUser(dsplName, dsplEmail, dsplPassword);
+                if (!TextUtils.isEmpty(dsplName) || !TextUtils.isEmpty(dsplEmail) || !TextUtils.isEmpty(dsplPassword) || !TextUtils.isEmpty(dsplConfPassword)){
+                    if (dsplPassword.equals(dsplConfPassword)) {
+
+                        registerProgress.setTitle("Rigister User");
+                        registerProgress.setMessage("Please wait...");
+                        registerProgress.setCanceledOnTouchOutside(false);
+                        registerProgress.show();
+                        registerUser(dsplName, dsplEmail, dsplPassword);
+                    } else {
+                        Toast.makeText(RegisterActivity.this, " Confirm password right!", Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }

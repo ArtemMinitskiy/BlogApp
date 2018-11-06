@@ -6,9 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/materialdesign_cyan">
 
-
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/mainUserImage"
+        android:id="@+id/main_user_image"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="16dp"
@@ -18,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/mainUserName"
+        android:id="@+id/main_user_name"
         android:layout_width="0dp"
         android:layout_height="19dp"
         android:layout_marginStart="16dp"
@@ -28,10 +27,10 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainUserImage" />
+        app:layout_constraintTop_toBottomOf="@+id/main_user_image" />
 
     <TextView
-        android:id="@+id/mainUserEmail"
+        android:id="@+id/main_user_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -43,7 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainUserName" />
+        app:layout_constraintTop_toBottomOf="@+id/main_user_name" />
 
 
 </android.support.constraint.ConstraintLayout>

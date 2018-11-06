@@ -1,7 +1,10 @@
 package com.example.artem.blogapp.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +14,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.artem.blogapp.Fragment.ChatFragment;
 import com.example.artem.blogapp.Fragment.FriendsFragment;
@@ -18,19 +23,35 @@ import com.example.artem.blogapp.Fragment.PostFragment;
 import com.example.artem.blogapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     
     private FirebaseAuth mainAuth;
     private DatabaseReference userRef;
+    private FirebaseUser firebaseUser;
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    private View navHeaderView;
+    private CircleImageView mainUserImage;
+    private TextView mainUserName, mainUserEmail;
+
+    private String currentUserId;
+    private String userEmail;
+
+    private FloatingActionButton newPostBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +60,29 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView = (NavigationView) findViewById(R.id.navLayout);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navHeaderView = navigationView.getHeaderView(0);
+        mainUserImage = (CircleImageView) navHeaderView.findViewById(R.id.main_user_image);
+        mainUserName = (TextView) navHeaderView.findViewById(R.id.main_user_name);
+        mainUserEmail = (TextView) navHeaderView.findViewById(R.id.main_user_email);
+        newPostBtn = (FloatingActionButton) findViewById(R.id.new_post_btn);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        mainAuth = FirebaseAuth.getInstance();
+        currentUserId = mainAuth.getCurrentUser().getUid();
+        userRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        firebaseUser = mainAuth.getCurrentUser();
+        userEmail = firebaseUser.getEmail();
+
+        setNavHeaderInfo();
+
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.containerView,new ChatFragment()).commit();
+        fragmentTransaction.replace(R.id.containerView,new PostFragment()).commit();
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                drawerLayout.closeDrawers();
                 if (menuItem.getItemId() == R.id.friends) {
                     FragmentTransaction friendsTransaction = fragmentManager.beginTransaction();
                     friendsTransaction.replace(R.id.containerView,new FriendsFragment()).addToBackStack(null).commit();
@@ -91,6 +124,35 @@ public class MainActivity extends AppCompatActivity {
         if (mainAuth.getCurrentUser() != null) {
             userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mainAuth.getCurrentUser().getUid());
         }
+
+        newPostBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newPostIntent = new Intent(MainActivity.this, NewPostActivity.class);
+                startActivity(newPostIntent);
+                finish();
+            }
+        });
+    }
+
+    private void setNavHeaderInfo() {
+        userRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String userImageUrl = dataSnapshot.child("thumb_image").getValue().toString();
+                String userName = dataSnapshot.child("name").getValue().toString();
+                Log.i("mLog", "Name: " + userName);
+                Picasso.get().load(userImageUrl).placeholder(R.drawable.user_default).into(mainUserImage);
+                mainUserName.setText(dataSnapshot.child("name").getValue().toString());
+                mainUserEmail.setText(userEmail);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

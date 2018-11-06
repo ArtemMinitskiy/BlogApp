@@ -110,7 +110,7 @@ public class UsersActivity extends AppCompatActivity {
 
         private TextView userName, userStatus;
         private CircleImageView userImageView;
-        View view;
+        private View view;
 
         public UsersViewHolder(@NonNull View itemView) {
             super(itemView);

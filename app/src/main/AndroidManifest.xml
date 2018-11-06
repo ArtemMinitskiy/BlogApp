@@ -38,13 +38,15 @@
             android:parentActivityName=".Activity.MainActivity" />
         <activity android:name=".Activity.ProfileActivity">
             <intent-filter>
-                <action android:name="com.example.artem.firebasechat_TARGET_NOTIFICATION" />
+                <action android:name="com.example.artem.blogapp_TARGET_NOTIFICATION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.ChatActivity"
-            android:parentActivityName=".Activity.MainActivity"></activity>
+        <activity
+            android:name=".Activity.ChatActivity"
+            android:parentActivityName=".Activity.MainActivity" />
+        <activity android:name=".Activity.NewPostActivity"></activity>
     </application>
 
 </manifest>
