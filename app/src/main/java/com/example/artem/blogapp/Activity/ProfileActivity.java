@@ -33,15 +33,12 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView profileName, profileStatus;
     private Button sendReqBtn, declineBtn;
 
-    private DatabaseReference usersDatabase;
-
     private ProgressDialog profileProgress;
 
     private DatabaseReference friendReqDatabase;
     private DatabaseReference friendDatabase;
-
+    private DatabaseReference usersDatabase;
     private DatabaseReference rootRef;
-
     private FirebaseUser currentUser;
 
     private String currentState;
@@ -118,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 declineBtn.setVisibility(View.VISIBLE);
                                 declineBtn.setEnabled(true);
-                                
+
                             } else if(req_type.equals("sent")) {
 
                                 currentState = "req_sent";
@@ -132,7 +129,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                         } else {
-                            
+
                             friendDatabase.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {

@@ -1,10 +1,7 @@
 package com.example.artem.blogapp.Model;
 
-import java.util.Date;
-
 public class Posts {
     private String user_id, image_url, desc, image_thumb;
-//    private Date timestamp;
 
     public Posts() {
     }
@@ -14,7 +11,6 @@ public class Posts {
         this.image_url = image_url;
         this.desc = desc;
         this.image_thumb = image_thumb;
-//        this.timestamp = timestamp;
     }
 
     public String getUser_id() {
@@ -49,11 +45,4 @@ public class Posts {
         this.image_thumb = image_thumb;
     }
 
-//    public Date getTimestamp() {
-//        return timestamp;
-//    }
-//
-//    public void setTimestamp(Date timestamp) {
-//        this.timestamp = timestamp;
-//    }
 }

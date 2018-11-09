@@ -28,4 +28,5 @@
     <string name="postTime">0:00</string>
     <string name="postDescription">Description</string>
     <string name="addNewPost">Add New Post</string>
+    <string name="Comments">Comments:</string>
 </resources>

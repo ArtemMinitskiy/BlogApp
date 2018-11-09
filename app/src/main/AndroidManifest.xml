@@ -46,7 +46,8 @@
         <activity
             android:name=".Activity.ChatActivity"
             android:parentActivityName=".Activity.MainActivity" />
-        <activity android:name=".Activity.NewPostActivity"></activity>
+        <activity android:name=".Activity.NewPostActivity" />
+        <activity android:name=".Activity.CommentActivity"></activity>
     </application>
 
 </manifest>

@@ -78,10 +78,8 @@ public class UsersActivity extends AppCompatActivity {
             @Override
             public UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.users_item, parent, false);
-
                 return new UsersViewHolder(view);
             }
-
 
         };
 
@@ -89,7 +87,6 @@ public class UsersActivity extends AppCompatActivity {
         recyclerUsers.setAdapter(adapter);
 
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -121,9 +118,7 @@ public class UsersActivity extends AppCompatActivity {
         }
 
         public void setUserImage(String thumb_image, Context context){
-
             Picasso.get().load(thumb_image).placeholder(R.drawable.user_default).into(userImageView);
-
         }
 
     }

@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/blog_like_btn"
+                android:id="@+id/post_like_btn"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
@@ -92,7 +92,7 @@
                 app:layout_constraintVertical_bias="0.245" />
 
             <TextView
-                android:id="@+id/blog_like_count"
+                android:id="@+id/post_like_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -100,11 +100,11 @@
                 android:layout_marginBottom="8dp"
                 android:text="0 Likes"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/blog_like_btn"
+                app:layout_constraintStart_toEndOf="@+id/post_like_btn"
                 app:layout_constraintTop_toBottomOf="@+id/post_description" />
 
             <TextView
-                android:id="@+id/blog_comment_count"
+                android:id="@+id/post_comment_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -116,14 +116,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/post_description" />
 
             <ImageView
-                android:id="@+id/blog_comment_btn"
+                android:id="@+id/post_comment_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/blog_comment_count"
+                app:layout_constraintEnd_toStartOf="@+id/post_comment_count"
                 app:layout_constraintTop_toBottomOf="@+id/post_description"
                 app:srcCompat="@mipmap/ic_comments" />
 

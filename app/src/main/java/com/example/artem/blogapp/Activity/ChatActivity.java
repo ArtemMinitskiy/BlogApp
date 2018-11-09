@@ -83,6 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         chatMessage = (EditText) findViewById(R.id.chat_message_view);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_messages);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.message_swipe_layout);
+
         messagesList = new ArrayList<>();
         rootRef = FirebaseDatabase.getInstance().getReference();
         imageStorage = FirebaseStorage.getInstance().getReference();

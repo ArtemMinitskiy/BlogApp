@@ -141,9 +141,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String userImageUrl = dataSnapshot.child("thumb_image").getValue().toString();
                 String userName = dataSnapshot.child("name").getValue().toString();
-                Log.i("mLog", "Name: " + userName);
                 Picasso.get().load(userImageUrl).placeholder(R.drawable.user_default).into(mainUserImage);
-                mainUserName.setText(dataSnapshot.child("name").getValue().toString());
+                mainUserName.setText(userName);
                 mainUserEmail.setText(userEmail);
 
             }

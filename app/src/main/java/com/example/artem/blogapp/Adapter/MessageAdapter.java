@@ -3,6 +3,7 @@ package com.example.artem.blogapp.Adapter;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
@@ -40,24 +42,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        final String current_user_id = firebaseAuth.getCurrentUser().getUid();
-        Messages messages = messagesList.get(position);
-        final String from_user = messages.getFrom();
-        String message_type = messages.getType();
-        userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
+        final String currentUserId = firebaseAuth.getCurrentUser().getUid();
+        final Messages messages = messagesList.get(position);
+        final String fromUser = messages.getFrom();
+        String messageType = messages.getType();
+        userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(fromUser);
         userDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("name").getValue().toString();
 
                 holder.nameUser.setText(name);
-//                if (from_user.equals(current_user_id)) {
-//                    holder.nameUser.setVisibility(View.INVISIBLE);
-//                    holder.secondNameUser.setText(name);
-//                }else {
-//                    holder.secondNameUser.setVisibility(View.INVISIBLE);
-//                    holder.nameUser.setText(name);
-//                }
+                holder.getDataOfTimeStamp(messages.getTime());
 
             }
 
@@ -66,27 +62,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             }
         });
-        if (message_type.equals("text")){
+        if (messageType.equals("text")){
             holder.messageText.setText(messages.getMessage());
-//            holder.secondMessageText.setText(messages.getMessage());
             holder.messageImage.setVisibility(View.INVISIBLE);
         }else {
-//            holder.secondMessageText.setVisibility(View.INVISIBLE);
             holder.messageText.setVisibility(View.INVISIBLE);
             Picasso.get().load(messages.getMessage()).placeholder(R.drawable.user_default).into(holder.messageImage);
         }
 
-        if (from_user.equals(current_user_id)) {
-//            holder.messageText.setVisibility(View.INVISIBLE);
+        if (fromUser.equals(currentUserId)) {
             holder.messageText.getResources().getColor(R.color.messageColor);
             holder.messageText.setTextColor(Color.BLACK);
         }else {
-//            holder.secondMessageText.setVisibility(View.INVISIBLE);
             holder.messageText.setBackgroundResource(R.drawable.text_from_background);
             holder.messageText.setTextColor(Color.BLACK);
         }
         holder.messageText.setText(messages.getMessage());
-//        holder.secondMessageText.setText(messages.getMessage());
 
     }
 
@@ -97,16 +88,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
 
     public class MessageViewHolder extends RecyclerView.ViewHolder{
-        private TextView messageText, nameUser, secondNameUser, secondMessageText;
+        private TextView messageText, nameUser, timeMessage;
         private ImageView messageImage;
 
         public MessageViewHolder(View view) {
             super(view);
             messageText = (TextView) view.findViewById(R.id.user_chat_message);
-//            secondNameUser = (TextView) view.findViewById(R.id.second_user_chat_name);
             nameUser = (TextView) view.findViewById(R.id.user_chat_name);
-//            secondMessageText = (TextView) view.findViewById(R.id.second_user_chat_message);
+            timeMessage = (TextView) view.findViewById(R.id.time_chat_message);
             messageImage = (ImageView) view.findViewById(R.id.message_image);
+        }
+
+
+        public void getDataOfTimeStamp(long timestamp){
+            String postDate = DateFormat.format("HH:mm", new Date(timestamp)).toString();
+            timeMessage.setText(postDate);
         }
     }
 }
