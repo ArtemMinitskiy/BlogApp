@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -127,58 +129,73 @@ public class PostFragment extends Fragment {
 
                     }
                 });
-//
-//                likeReference.child(currentUserId).addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if (!dataSnapshot.hasChildren()){
-//                            int count = dataSnapshot.size();
-//
-//                            holder.updateLikesCount(count);
-//                        }else {
-//                            holder.updateLikesCount(0);
-//                        }
-//                    }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
 
-//                likeReference.child(currentUserId).addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if (dataSnapshot.exists()){
-//                            holder.likeBtn.setImageDrawable(context.getDrawable(R.mipmap.ic_favorite_like));
-//                        }else{
-//                            holder.likeBtn.setImageDrawable(context.getDrawable(R.mipmap.ic_favorite));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
+                postReference.child(listUserId).child("Comments").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getChildrenCount() != 0) {
+                            holder.postCommentCount.setText(dataSnapshot.getChildrenCount() + " comments");
+                        }else {
+                            holder.postCommentCount.setText("0 comments");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                postReference.child(listUserId).child("Likes").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getChildrenCount() != 0) {
+                            holder.postLikeCount.setText(dataSnapshot.getChildrenCount() + " likes");
+                        }else {
+                            holder.postLikeCount.setText("0 likes");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                postReference.child(listUserId).child("Likes").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()){
+                            holder.likeBtn.setImageDrawable(context.getDrawable(R.mipmap.ic_favorite_like));
+                        }else{
+                            holder.likeBtn.setImageDrawable(context.getDrawable(R.mipmap.ic_favorite));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
                 holder.likeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         final DatabaseReference likeReference = postReference.child(listUserId).child("Likes");
-                        likeReference.addValueEventListener(new ValueEventListener() {
+                        likeReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (!dataSnapshot.exists()) {
+                                if (!dataSnapshot.hasChild(currentUserId)) {
                                     Map<String, Object> likesMap = new HashMap<>();
-                                    likesMap.put("timestamp", ServerValue.TIMESTAMP);
+                                    likesMap.put("user_id", currentUserId);
                                     likeReference.child(currentUserId).setValue(likesMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
 
                                         }
                                     });
+                                }else {
+                                    likeReference.child(currentUserId).removeValue();
                                 }
                             }
 
@@ -187,6 +204,7 @@ public class PostFragment extends Fragment {
 
                             }
                         });
+
                     }
                 });
 
@@ -199,6 +217,8 @@ public class PostFragment extends Fragment {
                         context.startActivity(commentIntent);
                     }
                 });
+
+
             }
 
             @NonNull
