@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,13 +24,11 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -50,6 +49,7 @@ public class PostFragment extends Fragment {
     public Context context;
 
     private View view;
+    private LinearLayoutManager layoutManager;
 
     private String currentUserId;
 
@@ -70,8 +70,11 @@ public class PostFragment extends Fragment {
         postReference.keepSynced(true);
         userReference.keepSynced(true);
 
+        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerPost.setHasFixedSize(true);
-        recyclerPost.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerPost.setLayoutManager(layoutManager);
 
         context = container.getContext();
 
@@ -92,36 +95,42 @@ public class PostFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull final PostViewHolder holder, int position, @NonNull final Posts model) {
-                final String listUserId = getRef(position).getKey();
 
-                postReference.child(listUserId).addValueEventListener(new ValueEventListener() {
+                final String postId = getRef(position).getKey();
+                postReference.child(postId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String postDescription = dataSnapshot.child("desc").getValue().toString();
-                        String postImage = dataSnapshot.child("image_url").getValue().toString();
-                        long postTimestamp = Long.parseLong(dataSnapshot.child("timestamp").getValue().toString());
+                        if (dataSnapshot.exists()) {
+                            String postDescription = dataSnapshot.child("desc").getValue().toString();
+                            String postImage = dataSnapshot.child("image_url").getValue().toString();
+                            long postTimestamp = Long.parseLong(dataSnapshot.child("timestamp").getValue().toString());
 
-                        holder.postDesc.setText(postDescription);
-                        holder.setImage(postImage, getContext());
-                        holder.getDataOfTimeStamp(postTimestamp);
+                            holder.postDesc.setText(postDescription);
+                            holder.setImage(postImage, getContext());
+                            holder.getDataOfTimeStamp(postTimestamp);
 
-                        String postUserId = dataSnapshot.child("user_id").getValue().toString();
+                            String postUserId = dataSnapshot.child("user_id").getValue().toString();
 
-                        userReference.child(postUserId).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String postProfileName = dataSnapshot.child("name").getValue().toString();
-                                String postProfileImage = dataSnapshot.child("thumb_image").getValue().toString();
-
-                                holder.postUserName.setText(postProfileName);
-                                holder.setUserImage(postProfileImage, getContext());
+                            if (!postUserId.equals(currentUserId)) {
+                                holder.postMenu.setEnabled(false);
+                                holder.postMenu.setVisibility(View.INVISIBLE);
                             }
+                            userReference.child(postUserId).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String postProfileName = dataSnapshot.child("name").getValue().toString();
+                                    String postProfileImage = dataSnapshot.child("thumb_image").getValue().toString();
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    holder.postUserName.setText(postProfileName);
+                                    holder.setUserImage(postProfileImage, getContext());
+                                }
 
-                            }
-                        });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
                     }
 
                     @Override
@@ -130,7 +139,7 @@ public class PostFragment extends Fragment {
                     }
                 });
 
-                postReference.child(listUserId).child("Comments").addValueEventListener(new ValueEventListener() {
+                postReference.child(postId).child("Comments").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getChildrenCount() != 0) {
@@ -146,29 +155,15 @@ public class PostFragment extends Fragment {
                     }
                 });
 
-                postReference.child(listUserId).child("Likes").addValueEventListener(new ValueEventListener() {
+                postReference.child(postId).child("Likes").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getChildrenCount() != 0) {
-                            holder.postLikeCount.setText(dataSnapshot.getChildrenCount() + " likes");
-                        }else {
-                            holder.postLikeCount.setText("0 likes");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                postReference.child(listUserId).child("Likes").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()){
+                        if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() != 0){
                             holder.likeBtn.setImageDrawable(context.getDrawable(R.mipmap.ic_favorite_like));
+                            holder.postLikeCount.setText(dataSnapshot.getChildrenCount() + " likes");
                         }else{
                             holder.likeBtn.setImageDrawable(context.getDrawable(R.mipmap.ic_favorite));
+                            holder.postLikeCount.setText("0 likes");
                         }
                     }
 
@@ -181,7 +176,7 @@ public class PostFragment extends Fragment {
                 holder.likeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        final DatabaseReference likeReference = postReference.child(listUserId).child("Likes");
+                        final DatabaseReference likeReference = postReference.child(postId).child("Likes");
                         likeReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -208,12 +203,36 @@ public class PostFragment extends Fragment {
                     }
                 });
 
+                holder.postMenu.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PopupMenu popupMenu = new PopupMenu(context, holder.postMenu);
+                        popupMenu.inflate(R.menu.option_menu);
+                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()) {
+                                    case R.id.edit:
+
+                                        break;
+                                    case R.id.delete:
+                                        postReference.child(postId).removeValue();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                return false;
+                            }
+                        });
+                        popupMenu.show();
+                    }
+                });
 
                 holder.commentBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent commentIntent = new Intent(getActivity(), CommentActivity.class);
-                        commentIntent.putExtra("blogPostId", listUserId);
+                        commentIntent.putExtra("blogPostId", postId);
                         context.startActivity(commentIntent);
                     }
                 });
@@ -238,22 +257,23 @@ public class PostFragment extends Fragment {
 
         private CircleImageView postUserImage;
         private ImageView postImage;
-        private TextView postUserName, postTime, postDesc, postLikeCount, postCommentCount;
+        private TextView postUserName, postTime, postDesc, postLikeCount, postCommentCount, postMenu;
         private View view;
         private ImageView likeBtn, commentBtn;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            postUserName = (TextView) view.findViewById(R.id.post_user_name);
+            postUserName = (TextView) view.findViewById(R.id.comment_post_user_name);
             postTime = (TextView) view.findViewById(R.id.post_time);
-            postDesc = (TextView) view.findViewById(R.id.post_description);
+            postDesc = (TextView) view.findViewById(R.id.comment_post_description);
+            postMenu = (TextView) view.findViewById(R.id.comment_post_menu);
             postLikeCount = (TextView) view.findViewById(R.id.post_like_count);
-            postCommentCount = (TextView) view.findViewById(R.id.post_comment_count);
-            postImage = (ImageView) view.findViewById(R.id.post_image);
-            likeBtn = (ImageView) view.findViewById(R.id.post_like_btn);
+            postCommentCount = (TextView) view.findViewById(R.id.comment_post_count);
+            postImage = (ImageView) view.findViewById(R.id.comment_post_image);
+            likeBtn = (ImageView) view.findViewById(R.id.comment_post_like_btn);
             commentBtn = (ImageView) view.findViewById(R.id.post_comment_btn);
-            postUserImage = (CircleImageView) view.findViewById(R.id.post_user_image);
+            postUserImage = (CircleImageView) view.findViewById(R.id.comment_post_user_image);
 
         }
 

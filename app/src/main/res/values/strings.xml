@@ -29,4 +29,6 @@
     <string name="postDescription">Description</string>
     <string name="addNewPost">Add New Post</string>
     <string name="Comments">Comments:</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

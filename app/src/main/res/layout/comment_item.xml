@@ -44,10 +44,24 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.785"
+        app:layout_constraintEnd_toStartOf="@+id/comment_post_menu"
+        app:layout_constraintHorizontal_bias="0.791"
         app:layout_constraintStart_toEndOf="@+id/comment_username"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/postTime" />
+
+    <TextView
+        android:id="@+id/comment_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:padding="5dp"
+        android:text="&#8942;"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.166" />
 
 </android.support.constraint.ConstraintLayout>

@@ -2,15 +2,17 @@ package com.example.artem.blogapp.Model;
 
 public class Posts {
     private String user_id, image_url, desc, image_thumb;
+    private long timestamp;
 
     public Posts() {
     }
 
-    public Posts(String user_id, String image_url, String desc, String image_thumb) {
+    public Posts(String user_id, String image_url, String desc, String image_thumb, long timestamp) {
         this.user_id = user_id;
         this.image_url = image_url;
         this.desc = desc;
         this.image_thumb = image_thumb;
+        this.timestamp = timestamp;
     }
 
     public String getUser_id() {
@@ -45,4 +47,11 @@ public class Posts {
         this.image_thumb = image_thumb;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

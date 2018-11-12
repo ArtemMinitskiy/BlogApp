@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="color" value="f72629" />
+                                                <entry key="color" value="c9c9c9" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -45,7 +45,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="iconShape" value="NONE" />
-                                      <entry key="outputName" value="ic_favorite_like" />
+                                      <entry key="outputName" value="ic_favorite" />
                                     </map>
                                   </option>
                                 </PersistentState>
